@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="uav_task_control" type="ugv_random_route.py" name="ugv_random" output="screen"/>
+</launch>

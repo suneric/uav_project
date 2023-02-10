@@ -1,0 +1,6 @@
+<launch>
+  <arg name="world" default="airliner_757"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find uav_task_gazebo)/worlds/$(arg world).world"/>
+  </include>
+</launch>

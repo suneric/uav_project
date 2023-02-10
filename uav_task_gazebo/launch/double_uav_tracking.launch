@@ -1,0 +1,39 @@
+<launch>
+  <arg name="world" default="empty"/>
+  <include file="$(find uav_task_gazebo)/launch/scene.launch">
+    <arg name="world" value="$(arg world)"/>
+  </include>
+
+  <group ns="ugv1">
+    <include file="$(find uav_task_gazebo)/launch/spawn_mobile_ugv.launch">
+      <arg name="robot_ns" value="/ugv1"/>
+      <arg name="name" value="ugv1" />
+      <arg name="tf_prefix" value="ugv1" />
+      <arg name="x" value="0.0" />
+      <arg name="y" value="0.0" />
+    </include>
+  </group>
+
+  <group ns="uav1">
+    <include file="$(find uav_task_gazebo)/launch/spawn_quadrotor_with_camera.launch">
+      <arg name="robot_ns" value="/uav1"/>
+      <arg name="name" value="uav1" />
+      <arg name="tf_prefix" value="uav1" />
+      <arg name="x" value="12.0" />
+      <arg name="y" value="-10.0" />
+    </include>
+  </group>
+
+  <group ns="uav2">
+    <include file="$(find uav_task_gazebo)/launch/spawn_quadrotor_with_camera.launch">
+      <arg name="robot_ns" value="/uav2"/>
+      <arg name="name" value="uav2" />
+      <arg name="tf_prefix" value="uav2" />
+      <arg name="x" value="10.0" />
+      <arg name="y" value="-10.0" />
+    </include>
+  </group>
+
+  <include file="$(find uav_task_control)/launch/ugv_random_controller.launch"/>
+
+</launch>

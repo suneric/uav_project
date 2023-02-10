@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="robot_ns" default=""/>
+  <arg name="name" default="quadrotor"/>
+  <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
+  <arg name="model" default="$(find uav_task_description)/urdf/quadrotor_with_camera.urdf.xacro"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+
+  <arg name="use_ground_truth_for_tf" default="true"/>
+  <arg name="use_ground_truth_for_control" default="true"/>
+  <arg name="use_pose_estimation" if="$(arg use_ground_truth_for_control)" default="false"/>
+  <arg name="use_pose_estimation" unless="$(arg use_ground_truth_for_control)" default="true"/>
+
+  <include file="$(find uav_task_gazebo)/launch/spawn_quadrotor.launch">
+    <arg name="robot_ns" value="$(arg robot_ns)"/>
+    <arg name="name" value="$(arg name)"/>
+    <arg name="tf_prefix" value="$(arg tf_prefix)"/>
+    <arg name="model" value="$(arg model)"/>
+    <arg name="x" value="$(arg x)"/>
+    <arg name="y" value="$(arg y)"/>
+    <arg name="use_ground_truth_for_tf" value="$(arg use_ground_truth_for_tf)"/>
+    <arg name="use_ground_truth_for_control" value="$(arg use_ground_truth_for_control)"/>
+    <arg name="use_pose_estimation" value="$(arg use_pose_estimation)"/>
+  </include>
+
+</launch>
