@@ -18,40 +18,38 @@ def out_search(ugvPose,len=50):
         return False
 
 def random_moving(driver, base):
-    rate = rospy.Rate(0.5)
+    rate = rospy.Rate(1)
     status, yaw = 'forward', None
     while not rospy.is_shutdown():
         try:
             ugvPose = driver.pose()
-            # print("ugv status {}, position ({:.3f}, {:.3f}), yaw {:.3f}".format(status,ugvPose[0],ugvPose[1],ugvPose[2]))
+            # check if out of search area
             if out_search(ugvPose):
+                # print("out of search area.")
                 if status == 'forward':
+                    yaw = ugvPose[2] - np.pi # in range [-pi, pi]
+                    if yaw < -np.pi:
+                        yaw += 2*np.pi
                     status = 'turning'
-                    yaw = ugvPose[2] + np.pi
-                    if yaw > np.pi:
-                        yaw -= 2*np.pi
+                    # print("turn to ", yaw)
+                elif status == 'turning':
+                    rate1 = rospy.Rate(10)
+                    dyaw = driver.pose()[2]
+                    while abs(dyaw-yaw) > 0.1:
+                        driver.drive(0.0,base[1])
+                        # print("turn to", yaw, dyaw)
+                        rate1.sleep()
+                        dyaw = driver.pose()[2]
+                    status='turned'
+                else:
+                    driver.drive(base[0],0)
+                    # print("moving forward")
             else:
-                if status == 'turning':
-                    status = 'forward'
-
-            if status == 'turning':
-                status = "turn"
-                rate1 = rospy.Rate(10)
-                while abs(driver.pose()[2]-yaw) > 0.1:
-                    driver.drive(0.0,base[1])
-                # print("turned")
-                while out_search(driver.pose()):
-                    driver.drive(base[0],0.0)
-                driver.drive(base[0],0.0)
-                rospy.sleep(5)
                 status = 'forward'
-            else:
                 rad = np.random.uniform(size=2)
                 vx = base[0]+base[0]*(rad[0]-0.5)
                 vz = base[1]*(rad[1]-0.5)
-                # print("ugv random velocity ({:.3f}, {:.3f})".format(vx,vz))
                 driver.drive(vx,vz)
-
         except rospy.ROSInterruptException:
             pass
         rate.sleep()
