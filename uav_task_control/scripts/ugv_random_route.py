@@ -27,7 +27,7 @@ def random_moving(driver, base):
             if out_search(ugvPose):
                 # print("out of search area.")
                 if status == 'forward':
-                    yaw = ugvPose[2] - np.pi # in range [-pi, pi]
+                    yaw = np.arctan2(ugvPose[1],ugvPose[0])-np.pi
                     if yaw < -np.pi:
                         yaw += 2*np.pi
                     status = 'turning'
